@@ -40,7 +40,7 @@ namespace EmailFlashcards.Controllers
             }
 
             var flashcard = await _context.Flashcards
-                .FirstOrDefaultAsync(m => m.Flashcard_Id == id);
+                .FirstOrDefaultAsync(m => m.FlashcardId == id);
             if (flashcard == null)
             {
                 return NotFound();
@@ -96,7 +96,7 @@ namespace EmailFlashcards.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Flashcard_Id,Title,Text,CardCreatedDate,FlashcardsCategory")] Flashcard flashcard)
         {
-            if (id != flashcard.Flashcard_Id)
+            if (id != flashcard.FlashcardId)
             {
                 return NotFound();
             }
@@ -110,7 +110,7 @@ namespace EmailFlashcards.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!FlashcardExists(flashcard.Flashcard_Id))
+                    if (!FlashcardExists(flashcard.FlashcardId))
                     {
                         return NotFound();
                     }
@@ -134,7 +134,7 @@ namespace EmailFlashcards.Controllers
             }
 
             var flashcard = await _context.Flashcards
-                .FirstOrDefaultAsync(m => m.Flashcard_Id == id);
+                .FirstOrDefaultAsync(m => m.FlashcardId == id);
             if (flashcard == null)
             {
                 return NotFound();
@@ -164,7 +164,7 @@ namespace EmailFlashcards.Controllers
 
         private bool FlashcardExists(int id)
         {
-          return (_context.Flashcards?.Any(e => e.Flashcard_Id == id)).GetValueOrDefault();
+          return (_context.Flashcards?.Any(e => e.FlashcardId == id)).GetValueOrDefault();
         }
     }
 }

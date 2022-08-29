@@ -12,5 +12,6 @@ namespace EmailFlashcards.Data
         }
 
         public virtual DbSet<Flashcard> Flashcards { get; set; } = default!;
+        public virtual DbSet<Category> Categories { get; set; } = default!;
     }
 }

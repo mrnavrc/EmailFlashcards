@@ -1,29 +1,26 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using EmailFlashcards.Data.Enum;
+
 
 namespace EmailFlashcards.Models
 {
     public class Flashcard
     {
         [Key]
-        public int Flashcard_Id { get; set; }
+        public int FlashcardId { get; set; }
 
         [Required]
-        public string? Title { get; set; }
+        public string? FlashcardTitle { get; set; }
 
         [Required]
-        public string? Text { get; set; }
+        public string? FlashcardText { get; set; }
 
         [DataType(DataType.Date)]
         [Display(Name = "Created")]
-        public DateTime? CardCreatedDate { get; set; }
-
-        // Enum
-        public FlashcardsCategory FlashcardsCategory { get; set; }
+        public DateTime? FlashcardCreatedDate { get; set; }
         
         // Virtuals FK
         public virtual User? User { get; set; }
-
+        public virtual ICollection<Category> Categories { get; set; } = new HashSet<Category>();
     }
 }
