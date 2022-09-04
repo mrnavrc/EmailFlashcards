@@ -10,87 +10,87 @@ using EmailFlashcards.Models;
 
 namespace EmailFlashcards.Controllers
 {
-    public class FlashcardsController : Controller
+    public class CategoriesController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public FlashcardsController(ApplicationDbContext context)
+        public CategoriesController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Flashcards
+        // GET: Categories
         public async Task<IActionResult> Index()
         {
-              return _context.Flashcards != null ? 
-                          View(await _context.Flashcards.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.Flashcards'  is null.");
+              return _context.Categories != null ? 
+                          View(await _context.Categories.ToListAsync()) :
+                          Problem("Entity set 'ApplicationDbContext.Categories'  is null.");
         }
 
-        // GET: Flashcards/Details/5
+        // GET: Categories/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Flashcards == null)
+            if (id == null || _context.Categories == null)
             {
                 return NotFound();
             }
 
-            var flashcard = await _context.Flashcards
-                .FirstOrDefaultAsync(m => m.FlashcardId == id);
-            if (flashcard == null)
+            var category = await _context.Categories
+                .FirstOrDefaultAsync(m => m.CategoryId == id);
+            if (category == null)
             {
                 return NotFound();
             }
 
-            return View(flashcard);
+            return View(category);
         }
 
-        // GET: Flashcards/Create
+        // GET: Categories/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Flashcards/Create
+        // POST: Categories/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FlashcardId,FlashcardTitle,FlashcardText,FlashcardCreatedDate")] Flashcard flashcard)
+        public async Task<IActionResult> Create([Bind("CategoryId,CategoryName,FlashcardsCategoryName")] Category category)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(flashcard);
+                _context.Add(category);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(flashcard);
+            return View(category);
         }
 
-        // GET: Flashcards/Edit/5
+        // GET: Categories/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Flashcards == null)
+            if (id == null || _context.Categories == null)
             {
                 return NotFound();
             }
 
-            var flashcard = await _context.Flashcards.FindAsync(id);
-            if (flashcard == null)
+            var category = await _context.Categories.FindAsync(id);
+            if (category == null)
             {
                 return NotFound();
             }
-            return View(flashcard);
+            return View(category);
         }
 
-        // POST: Flashcards/Edit/5
+        // POST: Categories/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("FlashcardId,FlashcardTitle,FlashcardText,FlashcardCreatedDate")] Flashcard flashcard)
+        public async Task<IActionResult> Edit(int id, [Bind("CategoryId,CategoryName,FlashcardsCategoryName")] Category category)
         {
-            if (id != flashcard.FlashcardId)
+            if (id != category.CategoryId)
             {
                 return NotFound();
             }
@@ -99,12 +99,12 @@ namespace EmailFlashcards.Controllers
             {
                 try
                 {
-                    _context.Update(flashcard);
+                    _context.Update(category);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!FlashcardExists(flashcard.FlashcardId))
+                    if (!CategoryExists(category.CategoryId))
                     {
                         return NotFound();
                     }
@@ -115,49 +115,49 @@ namespace EmailFlashcards.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(flashcard);
+            return View(category);
         }
 
-        // GET: Flashcards/Delete/5
+        // GET: Categories/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Flashcards == null)
+            if (id == null || _context.Categories == null)
             {
                 return NotFound();
             }
 
-            var flashcard = await _context.Flashcards
-                .FirstOrDefaultAsync(m => m.FlashcardId == id);
-            if (flashcard == null)
+            var category = await _context.Categories
+                .FirstOrDefaultAsync(m => m.CategoryId == id);
+            if (category == null)
             {
                 return NotFound();
             }
 
-            return View(flashcard);
+            return View(category);
         }
 
-        // POST: Flashcards/Delete/5
+        // POST: Categories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Flashcards == null)
+            if (_context.Categories == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.Flashcards'  is null.");
+                return Problem("Entity set 'ApplicationDbContext.Categories'  is null.");
             }
-            var flashcard = await _context.Flashcards.FindAsync(id);
-            if (flashcard != null)
+            var category = await _context.Categories.FindAsync(id);
+            if (category != null)
             {
-                _context.Flashcards.Remove(flashcard);
+                _context.Categories.Remove(category);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool FlashcardExists(int id)
+        private bool CategoryExists(int id)
         {
-          return (_context.Flashcards?.Any(e => e.FlashcardId == id)).GetValueOrDefault();
+          return (_context.Categories?.Any(e => e.CategoryId == id)).GetValueOrDefault();
         }
     }
 }

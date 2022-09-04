@@ -13,16 +13,13 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Title)
+                @Html.DisplayNameFor(model => model.FlashcardTitle)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Text)
+                @Html.DisplayNameFor(model => model.FlashcardText)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CardCreatedDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FlashcardsCategory)
+                @Html.DisplayNameFor(model => model.FlashcardCreatedDate)
             </th>
             <th></th>
         </tr>
@@ -31,21 +28,18 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Title)
+                @Html.DisplayFor(modelItem => item.FlashcardTitle)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Text)
+                @Html.DisplayFor(modelItem => item.FlashcardText)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CardCreatedDate)
+                @Html.DisplayFor(modelItem => item.FlashcardCreatedDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.FlashcardsCategory)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Flashcard_Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Flashcard_Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Flashcard_Id">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.FlashcardId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.FlashcardId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.FlashcardId">Delete</a>
             </td>
         </tr>
 }

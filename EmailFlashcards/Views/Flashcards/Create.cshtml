@@ -23,8 +23,13 @@
                 <span asp-validation-for="FlashcardText" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="FlashcardCreatedDate" class="control-label"></label>
+                <input asp-for="FlashcardCreatedDate" class="form-control" />
+                <span asp-validation-for="FlashcardCreatedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Categories" class="control-label"></label>
-                <select asp-for="Categories" class="form-control"></select>
+                <input asp-for="Categories" class="form-control" />
                 <span asp-validation-for="Categories" class="text-danger"></span>
             </div>
             <div class="form-group">

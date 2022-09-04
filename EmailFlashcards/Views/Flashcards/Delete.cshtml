@@ -12,33 +12,27 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
+            @Html.DisplayNameFor(model => model.FlashcardTitle)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Title)
+            @Html.DisplayFor(model => model.FlashcardTitle)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Text)
+            @Html.DisplayNameFor(model => model.FlashcardText)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Text)
+            @Html.DisplayFor(model => model.FlashcardText)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CardCreatedDate)
+            @Html.DisplayNameFor(model => model.FlashcardCreatedDate)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CardCreatedDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FlashcardsCategory)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FlashcardsCategory)
+            @Html.DisplayFor(model => model.FlashcardCreatedDate)
         </dd>
     </dl>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="Flashcard_Id" />
+        <input type="hidden" asp-for="FlashcardId" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
     </form>

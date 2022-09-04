@@ -22,32 +22,69 @@ namespace EmailFlashcards.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("EmailFlashcards.Models.Flashcard", b =>
+            modelBuilder.Entity("CategoryFlashcard", b =>
                 {
-                    b.Property<int>("Flashcard_Id")
+                    b.Property<int>("CategoriesCategoryId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("FlashcardsFlashcardId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("CategoriesCategoryId", "FlashcardsFlashcardId");
+
+                    b.HasIndex("FlashcardsFlashcardId");
+
+                    b.ToTable("CategoryFlashcard");
+                });
+
+            modelBuilder.Entity("EmailFlashcards.Models.Category", b =>
+                {
+                    b.Property<int>("CategoryId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Flashcard_Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CategoryId"));
 
-                    b.Property<DateTime?>("CardCreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("FlashcardsCategory")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
+                    b.Property<string>("CategoryName")
                         .HasColumnType("text");
 
-                    b.Property<string>("Title")
+                    b.Property<string>("FlashcardsCategoryName")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("UserId")
                         .HasColumnType("text");
 
-                    b.HasKey("Flashcard_Id");
+                    b.HasKey("CategoryId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("EmailFlashcards.Models.Flashcard", b =>
+                {
+                    b.Property<int>("FlashcardId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("FlashcardId"));
+
+                    b.Property<DateTime?>("FlashcardCreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("FlashcardText")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("FlashcardTitle")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.HasKey("FlashcardId");
 
                     b.HasIndex("UserId");
 
@@ -262,6 +299,30 @@ namespace EmailFlashcards.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("CategoryFlashcard", b =>
+                {
+                    b.HasOne("EmailFlashcards.Models.Category", null)
+                        .WithMany()
+                        .HasForeignKey("CategoriesCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EmailFlashcards.Models.Flashcard", null)
+                        .WithMany()
+                        .HasForeignKey("FlashcardsFlashcardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("EmailFlashcards.Models.Category", b =>
+                {
+                    b.HasOne("EmailFlashcards.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("EmailFlashcards.Models.Flashcard", b =>

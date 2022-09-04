@@ -12,26 +12,21 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Flashcard_Id" />
+            <input type="hidden" asp-for="FlashcardId" />
             <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
+                <label asp-for="FlashcardTitle" class="control-label"></label>
+                <input asp-for="FlashcardTitle" class="form-control" />
+                <span asp-validation-for="FlashcardTitle" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Text" class="control-label"></label>
-                <input asp-for="Text" class="form-control" />
-                <span asp-validation-for="Text" class="text-danger"></span>
+                <label asp-for="FlashcardText" class="control-label"></label>
+                <input asp-for="FlashcardText" class="form-control" />
+                <span asp-validation-for="FlashcardText" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CardCreatedDate" class="control-label"></label>
-                <input asp-for="CardCreatedDate" class="form-control" />
-                <span asp-validation-for="CardCreatedDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FlashcardsCategory" class="control-label"></label>
-                <select asp-for="FlashcardsCategory" class="form-control"></select>
-                <span asp-validation-for="FlashcardsCategory" class="text-danger"></span>
+                <label asp-for="FlashcardCreatedDate" class="control-label"></label>
+                <input asp-for="FlashcardCreatedDate" class="form-control" />
+                <span asp-validation-for="FlashcardCreatedDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
