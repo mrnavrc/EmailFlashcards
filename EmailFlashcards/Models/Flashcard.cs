@@ -9,6 +9,8 @@ namespace EmailFlashcards.Models
         [Key]
         public int FlashcardId { get; set; }
 
+        public string? UserId { get; set; }
+
         [Required]
         public string? FlashcardTitle { get; set; }
 
@@ -18,7 +20,7 @@ namespace EmailFlashcards.Models
         [DataType(DataType.Date)]
         [Display(Name = "Created")]
         public DateTime? FlashcardCreatedDate { get; set; }
-        
+
         // Virtuals FK
         public virtual User? User { get; set; }
         public virtual ICollection<Category> Categories { get; set; } = new HashSet<Category>();

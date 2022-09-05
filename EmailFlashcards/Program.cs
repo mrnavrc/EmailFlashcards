@@ -1,5 +1,7 @@
 using EmailFlashcards.Data;
 using EmailFlashcards.Models;
+using EmailFlashcards.Services;
+using EmailFlashcards.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,6 +21,13 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
+
+
+// Custom Services
+
+builder.Services.AddScoped<IFlashcardService, FlashcardService>();
+
+
 
 var app = builder.Build();
 

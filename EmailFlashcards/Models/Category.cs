@@ -6,11 +6,13 @@ namespace EmailFlashcards.Models
     public class Category
     {
         public int CategoryId { get; set; }
-        public string? CategoryName { get; set; }
+
+        [Required]
+        public string? UserId { get; set; }
 
         [Required]
         [Display(Name = "Flashcard Category Name")]
-        public string? FlashcardsCategoryName { get; set; }
+        public string? FlashcardCategoryName { get; set; }
 
         //Virtuals
         public virtual User? User { get; set; }

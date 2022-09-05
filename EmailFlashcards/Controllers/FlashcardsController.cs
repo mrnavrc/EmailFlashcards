@@ -7,24 +7,31 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EmailFlashcards.Data;
 using EmailFlashcards.Models;
+using Microsoft.AspNetCore.Identity;
+using EmailFlashcards.Services.Interfaces;
 
 namespace EmailFlashcards.Controllers
 {
     public class FlashcardsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<User> _userManager;
+        private readonly IFlashcardService _flashcardService;
 
-        public FlashcardsController(ApplicationDbContext context)
+        public FlashcardsController(ApplicationDbContext context,
+                                    UserManager<User> userManager,
+                                    IFlashcardService flashcardService)
         {
             _context = context;
+            _userManager = userManager;
+            _flashcardService = flashcardService;
         }
 
         // GET: Flashcards
         public async Task<IActionResult> Index()
         {
-              return _context.Flashcards != null ? 
-                          View(await _context.Flashcards.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.Flashcards'  is null.");
+            var applicationDbContext = _context.Flashcards.Include(c => c.User);
+            return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: Flashcards/Details/5
@@ -46,8 +53,10 @@ namespace EmailFlashcards.Controllers
         }
 
         // GET: Flashcards/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            string UserId = _userManager.GetUserId(User);
+            ViewData["CategoryList"] = new MultiSelectList(await _flashcardService.GetUserCategoriesAsync(UserId), "CategoryId", "FlashcardCategoryName");
             return View();
         }
 
@@ -56,15 +65,29 @@ namespace EmailFlashcards.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FlashcardId,FlashcardTitle,FlashcardText,FlashcardCreatedDate")] Flashcard flashcard)
+        public async Task<IActionResult> Create([Bind("FlashcardId,FlashcardTitle,FlashcardText,FlashcardCreatedDate")] Flashcard flashcard, List<int> CategoryList)
         {
+            ModelState.Remove("UserId");
+
             if (ModelState.IsValid)
             {
+              
+                flashcard.UserId = _userManager.GetUserId(User);
+                flashcard.FlashcardCreatedDate = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
+                
+                   
                 _context.Add(flashcard);
                 await _context.SaveChangesAsync();
+
+                // loop over all selected categories
+
+                foreach (int categoryId in CategoryList)
+                {
+                    await _flashcardService.AddFlashcardToCategoryAsync(categoryId, flashcard.FlashcardId);
+                }
                 return RedirectToAction(nameof(Index));
             }
-            return View(flashcard);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Flashcards/Edit/5

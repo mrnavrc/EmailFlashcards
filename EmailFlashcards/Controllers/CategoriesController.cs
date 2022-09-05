@@ -7,24 +7,27 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EmailFlashcards.Data;
 using EmailFlashcards.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace EmailFlashcards.Controllers
 {
     public class CategoriesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public CategoriesController(ApplicationDbContext context)
+        public CategoriesController(ApplicationDbContext context,
+                                    UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Categories
         public async Task<IActionResult> Index()
         {
-              return _context.Categories != null ? 
-                          View(await _context.Categories.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.Categories'  is null.");
+            var applicationDbContext = _context.Categories.Include(c => c.User);
+            return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: Categories/Details/5
@@ -36,6 +39,7 @@ namespace EmailFlashcards.Controllers
             }
 
             var category = await _context.Categories
+                .Include(c => c.User)
                 .FirstOrDefaultAsync(m => m.CategoryId == id);
             if (category == null)
             {
@@ -48,6 +52,7 @@ namespace EmailFlashcards.Controllers
         // GET: Categories/Create
         public IActionResult Create()
         {
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
             return View();
         }
 
@@ -56,14 +61,20 @@ namespace EmailFlashcards.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CategoryId,CategoryName,FlashcardsCategoryName")] Category category)
+        public async Task<IActionResult> Create([Bind("CategoryId,FlashcardCategoryName")] Category category)
         {
+            ModelState.Remove("UserId");
+
             if (ModelState.IsValid)
             {
+
+                category.UserId = _userManager.GetUserId(User);
+
                 _context.Add(category);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", category.UserId);
             return View(category);
         }
 
@@ -80,6 +91,7 @@ namespace EmailFlashcards.Controllers
             {
                 return NotFound();
             }
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", category.UserId);
             return View(category);
         }
 
@@ -88,7 +100,7 @@ namespace EmailFlashcards.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CategoryId,CategoryName,FlashcardsCategoryName")] Category category)
+        public async Task<IActionResult> Edit(int id, [Bind("CategoryId,UserId,FlashcardCategoryName")] Category category)
         {
             if (id != category.CategoryId)
             {
@@ -115,6 +127,7 @@ namespace EmailFlashcards.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", category.UserId);
             return View(category);
         }
 
@@ -127,6 +140,7 @@ namespace EmailFlashcards.Controllers
             }
 
             var category = await _context.Categories
+                .Include(c => c.User)
                 .FirstOrDefaultAsync(m => m.CategoryId == id);
             if (category == null)
             {
@@ -150,14 +164,14 @@ namespace EmailFlashcards.Controllers
             {
                 _context.Categories.Remove(category);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool CategoryExists(int id)
         {
-          return (_context.Categories?.Any(e => e.CategoryId == id)).GetValueOrDefault();
+            return (_context.Categories?.Any(e => e.CategoryId == id)).GetValueOrDefault();
         }
     }
 }
