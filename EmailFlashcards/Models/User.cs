@@ -19,5 +19,8 @@ namespace EmailFlashcards.Models
 
         [NotMapped]
         public string? FullName { get { return $"{FirstName} {LastName}"; } }
+
+        public virtual ICollection<Category> Categories { get; set; } = new HashSet<Category>();
+        public virtual ICollection<Flashcard> Flashcards { get; set; } = new HashSet<Flashcard>();
     }
 }

@@ -9,6 +9,7 @@ using EmailFlashcards.Data;
 using EmailFlashcards.Models;
 using Microsoft.AspNetCore.Identity;
 using EmailFlashcards.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EmailFlashcards.Controllers
 {
@@ -28,13 +29,33 @@ namespace EmailFlashcards.Controllers
         }
 
         // GET: Flashcards
-        public async Task<IActionResult> Index()
+        [Authorize]
+        public IActionResult Index(int categoryId)
         {
-            var applicationDbContext = _context.Flashcards.Include(c => c.User);
-            return View(await applicationDbContext.ToListAsync());
+            string UserId = _userManager.GetUserId(User);
+            User user = _context.Users
+                                .Include(c => c.Flashcards)
+                                .ThenInclude(c => c.Categories)
+                                .FirstOrDefault(u => u.Id == UserId);
+            var categories = user.Categories;
+            var flashcards = new List<Flashcard>();
+
+            if (categoryId == 0)
+            {
+                flashcards = user.Flashcards.ToList();
+            }
+            else
+            {
+                flashcards = user.Categories.FirstOrDefault(c => c.CategoryId == categoryId)
+                                  .Flashcards
+                                  .ToList();
+            }
+            ViewData["CategoryList"] = new SelectList(categories, "CategoryId", "FlashcardCategoryName", categoryId);
+            return View(flashcards);
         }
 
         // GET: Flashcards/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Flashcards == null)
@@ -53,6 +74,7 @@ namespace EmailFlashcards.Controllers
         }
 
         // GET: Flashcards/Create
+        [Authorize]
         public async Task<IActionResult> Create()
         {
             string UserId = _userManager.GetUserId(User);
@@ -61,8 +83,7 @@ namespace EmailFlashcards.Controllers
         }
 
         // POST: Flashcards/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("FlashcardId,FlashcardTitle,FlashcardText,FlashcardCreatedDate")] Flashcard flashcard, List<int> CategoryList)
@@ -91,6 +112,7 @@ namespace EmailFlashcards.Controllers
         }
 
         // GET: Flashcards/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Flashcards == null)
@@ -107,10 +129,9 @@ namespace EmailFlashcards.Controllers
         }
 
         // POST: Flashcards/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(int id, [Bind("FlashcardId,FlashcardTitle,FlashcardText,FlashcardCreatedDate")] Flashcard flashcard)
         {
             if (id != flashcard.FlashcardId)
@@ -142,6 +163,7 @@ namespace EmailFlashcards.Controllers
         }
 
         // GET: Flashcards/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Flashcards == null)
@@ -160,6 +182,7 @@ namespace EmailFlashcards.Controllers
         }
 
         // POST: Flashcards/Delete/5
+        [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

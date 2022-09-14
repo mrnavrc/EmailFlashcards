@@ -5,44 +5,74 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
-
+<h1>FlashCards</h1>
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.FlashcardTitle)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FlashcardText)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FlashcardCreatedDate)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FlashcardTitle)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FlashcardText)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FlashcardCreatedDate)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.FlashcardId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.FlashcardId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.FlashcardId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+
+
+<div class="row g-2">
+    <div class="col-12 col-md-4 sideNav">
+
+        @* Search*@
+        @*        <form asp-action="SearchContacts" asp-controller="Contacts">
+        <div class="input-group">
+        <input class="form-control" type="search" name="searchString" placeholder="Search Term" />
+        <input type="submit" class="btn btn-outline-primary" value="Search" />
+        </div>
+        </form>*@
+
+        @*Category filter*@
+        <form asp-action="Index" asp-controller="Flashcards">
+            <div class="mt-5">
+                <label class="form-label fw-bold">CATEGORY FILTER</label>
+                <select name="categoryId" asp-items="@ViewBag.CategoryList" class="form-control"
+                        onchange="this.form.submit()" onfocus="this.selectedIndex=-1;this.blur();">
+                    <option>All Categories</option>
+                </select>
+            </div>
+        </form>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.FlashcardTitle)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.FlashcardText)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.FlashcardCreatedDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Categories)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FlashcardTitle)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FlashcardText)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FlashcardCreatedDate)
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.FlashcardId">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.FlashcardId">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.FlashcardId">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
