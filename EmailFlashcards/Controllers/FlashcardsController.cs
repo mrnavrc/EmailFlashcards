@@ -28,7 +28,7 @@ namespace EmailFlashcards.Controllers
             _flashcardService = flashcardService;
         }
 
-        // GET: Flashcards
+        // GET: Flashcards + GET: filter categories
         [Authorize]
         public IActionResult Index(int categoryId)
         {
@@ -53,6 +53,61 @@ namespace EmailFlashcards.Controllers
             ViewData["CategoryList"] = new SelectList(categories, "CategoryId", "FlashcardCategoryName", categoryId);
             return View(flashcards);
         }
+
+        // GET: Filter categories
+        public IActionResult FilterCategory(int categoryId)
+        {
+            string UserId = _userManager.GetUserId(User);
+            User user = _context.Users
+                                .Include(c => c.Flashcards)
+                                .ThenInclude(c => c.Categories)
+                                .FirstOrDefault(u => u.Id == UserId);
+            var categories = user.Categories;
+            var flashcards = new List<Flashcard>();
+
+            if (categoryId == 0)
+            {
+                flashcards = user.Flashcards.ToList();
+            }
+            else
+            {
+                flashcards = user.Categories.FirstOrDefault(c => c.CategoryId == categoryId)
+                                  .Flashcards
+                                  .ToList();
+            }
+            ViewData["CategoryList"] = new SelectList(categories, "CategoryId", "FlashcardCategoryName", categoryId);
+            return View(flashcards);
+        }
+
+
+
+        // POST: SearchContacts
+
+[Authorize]
+        public IActionResult SearchFlashcard(string searchString)
+        {
+            string userId = _userManager.GetUserId(User);
+            User user = _context.Users
+                                .Include(_context => _context.Flashcards)
+                                .ThenInclude(_context => _context.Categories)
+                                .FirstOrDefault(_context => _context.Id == userId);
+            var flashcards = new List<Flashcard>();
+            if(String.IsNullOrEmpty(searchString))
+            {
+                return View(nameof(Index), flashcards);
+            }
+            else
+            {
+                flashcards = user.Flashcards.Where(flashcard => flashcard.FlashcardText!.ToLower().Contains(searchString.ToLower()))
+                                            .ToList();
+            }
+
+            return View(nameof(Index), flashcards);
+        }
+
+
+
+
 
         // GET: Flashcards/Details/5
         [Authorize]

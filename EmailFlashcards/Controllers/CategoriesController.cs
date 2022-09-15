@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using EmailFlashcards.Data;
 using EmailFlashcards.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EmailFlashcards.Controllers
 {
@@ -24,32 +25,17 @@ namespace EmailFlashcards.Controllers
         }
 
         // GET: Categories
-        public async Task<IActionResult> Index()
+        [Authorize]
+        public IActionResult Index()
         {
-            var applicationDbContext = _context.Categories.Include(c => c.User);
-            return View(await applicationDbContext.ToListAsync());
-        }
-
-        // GET: Categories/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.Categories == null)
-            {
-                return NotFound();
-            }
-
-            var category = await _context.Categories
-                .Include(c => c.User)
-                .FirstOrDefaultAsync(m => m.CategoryId == id);
-            if (category == null)
-            {
-                return NotFound();
-            }
-
-            return View(category);
+            string userId = _userManager.GetUserId(User);
+            var categories = _context.Categories.Where(categories => categories.UserId == userId)
+                                                .ToList();
+            return View(categories);
         }
 
         // GET: Categories/Create
+        [Authorize]
         public IActionResult Create()
         {
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
@@ -57,10 +43,9 @@ namespace EmailFlashcards.Controllers
         }
 
         // POST: Categories/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Create([Bind("CategoryId,FlashcardCategoryName")] Category category)
         {
             ModelState.Remove("UserId");
@@ -79,27 +64,32 @@ namespace EmailFlashcards.Controllers
         }
 
         // GET: Categories/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        [Authorize]
+        public IActionResult Edit(int? id)
         {
             if (id == null || _context.Categories == null)
             {
                 return NotFound();
             }
 
-            var category = await _context.Categories.FindAsync(id);
+            string userId = _userManager.GetUserId(User);
+            var category = _context.Categories.Where(category => category.UserId == userId && category.CategoryId == id)
+                                        .FirstOrDefault();
+
+
             if (category == null)
             {
                 return NotFound();
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", category.UserId);
+            
+
             return View(category);
         }
 
         // POST: Categories/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(int id, [Bind("CategoryId,UserId,FlashcardCategoryName")] Category category)
         {
             if (id != category.CategoryId)
@@ -132,6 +122,7 @@ namespace EmailFlashcards.Controllers
         }
 
         // GET: Categories/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Categories == null)
@@ -153,6 +144,7 @@ namespace EmailFlashcards.Controllers
         // POST: Categories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_context.Categories == null)
