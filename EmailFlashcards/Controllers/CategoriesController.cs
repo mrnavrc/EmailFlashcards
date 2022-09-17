@@ -9,6 +9,7 @@ using EmailFlashcards.Data;
 using EmailFlashcards.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using System.Linq.Expressions;
 
 namespace EmailFlashcards.Controllers
 {
@@ -48,6 +49,16 @@ namespace EmailFlashcards.Controllers
         [Authorize]
         public async Task<IActionResult> Create([Bind("CategoryId,FlashcardCategoryName")] Category category)
         {
+            List<string?> NamesOfCategories = await _context.Categories.Select(categories => categories.FlashcardCategoryName).ToListAsync();
+
+            foreach (var name in NamesOfCategories)
+            {
+                if (category.FlashcardCategoryName == name)
+                {
+                    return NotFound(); //add View later
+                }
+            }
+
             ModelState.Remove("UserId");
 
             if (ModelState.IsValid)
@@ -92,33 +103,36 @@ namespace EmailFlashcards.Controllers
         [Authorize]
         public async Task<IActionResult> Edit(int id, [Bind("CategoryId,UserId,FlashcardCategoryName")] Category category)
         {
+
+            List<string?> NamesOfCategories = await _context.Categories.Select(categories => categories.FlashcardCategoryName).ToListAsync();
+
+            foreach (var name in NamesOfCategories)
+            {
+                if (category.FlashcardCategoryName == name)
+                {
+                    return NotFound(); //add View later
+                }
+            }
+           
+
+            ModelState.Remove("UserId");
+            if (ModelState.IsValid) {
+               
+                    category.UserId = _userManager.GetUserId(User);
+
+                    _context.Update(category);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+            }
+
             if (id != category.CategoryId)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(category);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CategoryExists(category.CategoryId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", category.UserId);
             return View(category);
+
+
         }
 
         // GET: Categories/Delete/5
@@ -130,9 +144,9 @@ namespace EmailFlashcards.Controllers
                 return NotFound();
             }
 
+            string userId = _userManager.GetUserId(User);
             var category = await _context.Categories
-                .Include(c => c.User)
-                .FirstOrDefaultAsync(m => m.CategoryId == id);
+                                         .FirstOrDefaultAsync(categories => categories.CategoryId == id && categories.UserId == userId);
             if (category == null)
             {
                 return NotFound();
@@ -147,17 +161,14 @@ namespace EmailFlashcards.Controllers
         [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Categories == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.Categories'  is null.");
-            }
-            var category = await _context.Categories.FindAsync(id);
+           
+            string userId = _userManager.GetUserId(User);
+            var category = await _context.Categories.FirstOrDefaultAsync(categories => categories.CategoryId == id && categories.UserId == userId);
             if (category != null)
             {
                 _context.Categories.Remove(category);
+                await _context.SaveChangesAsync();
             }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
