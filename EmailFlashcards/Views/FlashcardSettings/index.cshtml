@@ -1,0 +1,28 @@
+﻿@model EmailFlashcards.Models.FlashcardSetting
+
+
+
+<h1>Flashcards Settings</h1>
+
+
+<form asp-action="SettingsEdit" class="mt-5">
+    <label class="form-label" for="customRange2">Number of Flashcards Per Day</label>
+    <div class="range">
+        <input asp-action="Edit" asp-for="FlashcardsPerDay" value=@ViewData["FlashcardsPerDay"] asp-items="ViewBag.FlashcardsPerDay" type="range" class="form-range" min="0" max="10" step="1" id="customRange2" />
+    </div>
+
+
+    <label class="form-label" for="customRange2">Time</label>
+    <div class="range">
+        <input asp-action="Edit" asp-for="Time" type="range" value=@ViewData["Time"] asp-items="ViewBag.Time" class="form-range" id="customRange2" />
+    </div>
+
+
+    <label for="email">Enter your email:</label>
+    <input asp-action="Edit" asp-for="FlashcardEmailAdress" value=@ViewData["FlashcardEmailAdress"] type="email">
+
+    <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-primary rounded-pill btnlinks mt-2" />
+    </div>
+
+</form>
