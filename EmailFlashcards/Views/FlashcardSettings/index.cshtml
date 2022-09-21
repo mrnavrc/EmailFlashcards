@@ -6,23 +6,34 @@
 
 
 <form asp-action="SettingsEdit" class="mt-5">
-    <label class="form-label" for="customRange2">Number of Flashcards Per Day</label>
+    <label class="form-label" for="NumberOfFlashcardsPerDay">Number of Flashcards Per Day: <b><span id="NumberOfFlashcardsPerDayValue"></span></b></label>
     <div class="range">
-        <input asp-action="Edit" asp-for="FlashcardsPerDay" value=@ViewData["FlashcardsPerDay"] asp-items="ViewBag.FlashcardsPerDay" type="range" class="form-range" min="0" max="10" step="1" id="customRange2" />
+        <input asp-for="FlashcardsPerDay" value=@ViewData["FlashcardsPerDay"] type="range" class="form-range" min="0" max="10" step="1" id="NumberOfFlashcardsPerDay" />
     </div>
 
 
-    <label class="form-label" for="customRange2">Time</label>
-    <div class="range">
-        <input asp-action="Edit" asp-for="Time" type="range" value=@ViewData["Time"] asp-items="ViewBag.Time" class="form-range" id="customRange2" />
-    </div>
+    <label for="appt-time">Choose time: </label>
+    <input id="appt-time" asp-for="Time" value=@ViewData["Time"] type ="text" name="appt-time"/>
 
 
-    <label for="email">Enter your email:</label>
-    <input asp-action="Edit" asp-for="FlashcardEmailAdress" value=@ViewData["FlashcardEmailAdress"] type="email">
+    <label for="email">Please send the flashcards to:</label>
+    <input asp-for="FlashcardEmailAdress" value=@ViewData["FlashcardEmailAdress"] type="email">
 
     <div class="form-group">
         <input type="submit" value="Save" class="btn btn-primary rounded-pill btnlinks mt-2" />
     </div>
 
 </form>
+
+
+<script>
+    var slider = document.getElementById("NumberOfFlashcardsPerDay");
+    var output = document.getElementById("NumberOfFlashcardsPerDayValue");
+    output.innerHTML = slider.value;
+
+    slider.oninput = function () {
+        output.innerHTML = this.value;
+    }
+</script>
+
+
