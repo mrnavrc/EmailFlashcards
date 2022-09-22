@@ -18,10 +18,26 @@ namespace EmailFlashcards.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        // ERROR PAGE - HandleError must = Program.cs UseStatusCodePagesWithReExecute
+
+        [Route("/Home/HandleError/{code:int}")]
+        public IActionResult HandleError(int code, CustomErrorPage customErrorPage)
         {
-            return View();
+            customErrorPage.code = code;
+
+            if (code == 404)
+            {
+                customErrorPage.message = "The page you are looking for might have been removed...";
+            }
+            else
+            {
+                customErrorPage.message = "Sorry, something went wrong";
+            }
+            return View("/Views/Shared/CustomErrorPage.cshtml", customErrorPage);
         }
+
+
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
