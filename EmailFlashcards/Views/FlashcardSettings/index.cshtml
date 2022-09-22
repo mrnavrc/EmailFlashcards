@@ -2,24 +2,25 @@
 
 
 
-<h1>Flashcards Settings</h1>
 
 
-<form asp-action="SettingsEdit" class="mt-5">
-    <label class="form-label" for="NumberOfFlashcardsPerDay">Number of Flashcards Per Day: <b><span id="NumberOfFlashcardsPerDayValue"></span></b></label>
+<form asp-action="SettingsEdit" class="mt-5 m-4">
+
+    <h1>Flashcards Settings</h1>
+    <label class="form-label" for="NumberOfFlashcardsPerDay">Number of cards in email per day: <b><span id="NumberOfFlashcardsPerDayValue"></span></b></label>
     <div class="range">
         <input asp-for="FlashcardsPerDay" value=@ViewData["FlashcardsPerDay"] type="range" class="form-range" min="0" max="10" step="1" id="NumberOfFlashcardsPerDay" />
     </div>
 
+    <label class="form-label" for="Time">Flashcards will be sent to you at: <b><span id="TimeValue"></span>:00</b></label>
+    <div class="range">
+        <input asp-for="Hour" value=@ViewData["Time"] type="range" class="form-range" min="1" max="24" step="1" id="Time" />
+    </div>
 
-    <label for="appt-time">Choose time: </label>
-    <input id="appt-time" asp-for="Time" value=@ViewData["Time"] type ="text" name="appt-time"/>
-
-
-    <label for="email">Please send the flashcards to:</label>
+    <label for="email">Please send me the cards to this email:</label>
     <input asp-for="FlashcardEmailAdress" value=@ViewData["FlashcardEmailAdress"] type="email">
 
-    <div class="form-group">
+    <div class="form-group mt-2">
         <input type="submit" value="Save" class="btn btn-primary rounded-pill btnlinks mt-2" />
     </div>
 
@@ -27,13 +28,19 @@
 
 
 <script>
-    var slider = document.getElementById("NumberOfFlashcardsPerDay");
-    var output = document.getElementById("NumberOfFlashcardsPerDayValue");
-    output.innerHTML = slider.value;
+    var slider_flashcards = document.getElementById("NumberOfFlashcardsPerDay");
+    var output_flashcards = document.getElementById("NumberOfFlashcardsPerDayValue");
+    output_flashcards.innerHTML = slider_flashcards.value;
 
-    slider.oninput = function () {
-        output.innerHTML = this.value;
+    slider_flashcards.oninput = function () {
+        output_flashcards.innerHTML = this.value;
+    }
+
+    var slider_time = document.getElementById("Time");
+    var output_time = document.getElementById("TimeValue");
+    output_time.innerHTML = slider_time.value;
+
+    slider_time.oninput = function () {
+        output_time.innerHTML = this.value;
     }
 </script>
-
-

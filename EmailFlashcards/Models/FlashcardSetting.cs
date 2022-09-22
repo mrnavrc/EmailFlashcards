@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EmailFlashcards.Models
 {
@@ -6,9 +7,15 @@ namespace EmailFlashcards.Models
     {
         [Key]
         public int FlashcardSettingsId { get; set; }
+
         public string? FlashcardEmailAdress { get; set; }
+
         public int FlashcardsPerDay { get; set; } = 5;
-        public TimeOnly Time { get; set; } = new TimeOnly(09, 00);
+
+        [NotMapped]
+        public string Hour { get; set; }
+
+        public TimeOnly Time { get; set; }
 
         public string? UserId { get; set; }
     }

@@ -30,11 +30,11 @@ namespace EmailFlashcards.Controllers
                                                                 .ToListAsync();
 
             var FlashcardsPerDay = settings.Select(settings => settings.FlashcardsPerDay);
-            var Time = settings.Select(settings => settings.Time);
+            var Time = settings.Select(settings => settings.Time.Hour);
             var FlashcardEmailAdress = settings.Select(settings => settings.FlashcardEmailAdress);
 
             ViewData["FlashcardsPerDay"] = string.Join(";", FlashcardsPerDay);
-            //ViewData["Time"] = new TimeOnly(09, 00);
+            ViewData["Time"] = string.Join(";", Time);
             ViewData["FlashcardEmailAdress"] = string.Join(";", FlashcardEmailAdress);
             return View();
         }
@@ -44,10 +44,12 @@ namespace EmailFlashcards.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> SettingsEdit(FlashcardSetting flashcardsettings)
+        public async Task<IActionResult> SettingsEdit([Bind("FlashcardSettingsId, FlashcardEmailAdress, FlashcardsPerDay, Hour, UserId")] 
+        FlashcardSetting flashcardsettings)
         {
 
             flashcardsettings.UserId = _userManager.GetUserId(User);
+            flashcardsettings.Time = new TimeOnly(int.Parse(flashcardsettings.Hour), 00);
             bool RowExist = _context.FlashcardsSettings.Where(f => f.UserId == flashcardsettings.UserId)
                                                        .Any();
 
