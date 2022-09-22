@@ -10,6 +10,7 @@ using EmailFlashcards.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using System.Linq.Expressions;
+using System.Data;
 
 namespace EmailFlashcards.Controllers
 {
@@ -27,8 +28,9 @@ namespace EmailFlashcards.Controllers
 
         // GET: Categories
         [Authorize]
-        public IActionResult Index()
+        public IActionResult Index(string SuccessMessage = null)
         {
+            ViewData["SuccessMessage"] = SuccessMessage;
             string userId = _userManager.GetUserId(User);
             var categories = _context.Categories.Where(categories => categories.UserId == userId)
                                                 .ToList();
@@ -55,7 +57,8 @@ namespace EmailFlashcards.Controllers
             {
                 if (category.FlashcardCategoryName == name)
                 {
-                    return NotFound(); //add View later
+                    ViewData["DuplicityMessage"] = "DuplicityMessage";
+                    return View();
                 }
             }
 
@@ -68,7 +71,7 @@ namespace EmailFlashcards.Controllers
 
                 _context.Add(category);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { SuccessMessage = "succes" });
             }
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", category.UserId);
             return View(category);
@@ -110,7 +113,8 @@ namespace EmailFlashcards.Controllers
             {
                 if (category.FlashcardCategoryName == name)
                 {
-                    return NotFound(); //add View later
+                    ViewData["DuplicityMessage"] = "DuplicityMessage";
+                    return View();
                 }
             }
            
@@ -122,14 +126,14 @@ namespace EmailFlashcards.Controllers
 
                     _context.Update(category);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index), new { SuccessMessage = "succes" });
             }
 
             if (id != category.CategoryId)
             {
                 return NotFound();
             }
-
+ 
             return View(category);
 
 
@@ -169,7 +173,7 @@ namespace EmailFlashcards.Controllers
                 _context.Categories.Remove(category);
                 await _context.SaveChangesAsync();
             }
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { SuccessMessage = "succes" });
         }
 
         private bool CategoryExists(int id)

@@ -21,8 +21,9 @@ namespace EmailFlashcards.Controllers
 
 
         // GET - index page Flashcards settings
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string SuccessMessage = null)
         {
+            ViewData["SuccessMessage"] = SuccessMessage;
             string userId = _userManager.GetUserId(User);
 
             var settings = new List<FlashcardSetting>();
@@ -69,7 +70,7 @@ namespace EmailFlashcards.Controllers
                 _context.Update(flashcardsettings);
                 await _context.SaveChangesAsync();
             }
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { SuccessMessage = "succes" });
         }
 
     }

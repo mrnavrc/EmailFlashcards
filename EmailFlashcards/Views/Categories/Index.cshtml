@@ -39,3 +39,16 @@
 }
     </tbody>
 </table>
+
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@if (ViewData["SuccessMessage"] != null)
+{
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Your action has been saved',
+            showConfirmButton: false,
+            timer: 1500
+        })
+    </script>
+}
