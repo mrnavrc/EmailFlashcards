@@ -37,14 +37,32 @@ namespace EmailFlashcards.Services
             }
         }
   
-        public Task<IEnumerable<Category>> GetFlashcardCategoriesAsync(int flashcardId)
+        public async Task<IEnumerable<Category>> GetFlashcardCategoriesAsync(int flashcardId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                Flashcard? flashcard = await _context.Flashcards.Include(f => f.Categories).FirstOrDefaultAsync(c => c.FlashcardId == flashcardId);
+                return flashcard.Categories;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        public Task<ICollection<int>> GetFlashcardCategoryIdAsync(int flashcardId)
+        public async Task<ICollection<int>> GetFlashcardCategoryIdAsync(int flashcardId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var flashcard = await _context.Flashcards.Include(f => f.Categories)
+                                                     .FirstOrDefaultAsync(c => c.FlashcardId == flashcardId);
+                List<int> categoryIds = flashcard.Categories.Select(c => c.CategoryId).ToList();
+                return categoryIds;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public async Task<IEnumerable<Category>> GetUserCategoriesAsync(string userId)
@@ -71,9 +89,26 @@ namespace EmailFlashcards.Services
                                             .AnyAsync();
         }
 
-        public Task RemoveFlashcardFromCategoryAsync(int categoryId, int flashcardId)
+        public async Task RemoveFlashcardFromCategoryAsync(int categoryId, int flashcardId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (await IsFlashcardInCategory(categoryId, flashcardId))
+                {
+                    Flashcard flashcard = await _context.Flashcards.FindAsync(flashcardId);
+                    Category category = await _context.Categories.FindAsync(categoryId);
+
+                    if (category != null && flashcard != null)
+                    {
+                        category.Flashcards.Remove(flashcard);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         public IEnumerable<Flashcard> SearchForFlashcard(string searchString, string userId)

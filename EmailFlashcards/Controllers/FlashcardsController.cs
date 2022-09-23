@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,33 +31,9 @@ namespace EmailFlashcards.Controllers
 
         // GET: Flashcards + GET: filter categories
         [Authorize]
-        public IActionResult Index(int categoryId)
+        public IActionResult Index(int categoryId, string SuccessMessage = null)
         {
-            string UserId = _userManager.GetUserId(User);
-            User user = _context.Users
-                                .Include(c => c.Flashcards)
-                                .ThenInclude(c => c.Categories)
-                                .FirstOrDefault(u => u.Id == UserId);
-            var categories = user.Categories;
-            var flashcards = new List<Flashcard>();
-
-            if (categoryId == 0)
-            {
-                flashcards = user.Flashcards.ToList();
-            }
-            else
-            {
-                flashcards = user.Categories.FirstOrDefault(c => c.CategoryId == categoryId)
-                                  .Flashcards
-                                  .ToList();
-            }
-            ViewData["CategoryList"] = new SelectList(categories, "CategoryId", "FlashcardCategoryName", categoryId);
-            return View(flashcards);
-        }
-
-        // GET: Filter categories
-        public IActionResult FilterCategory(int categoryId)
-        {
+            ViewData["SuccessMessage"] = SuccessMessage;
             string UserId = _userManager.GetUserId(User);
             User user = _context.Users
                                 .Include(c => c.Flashcards)
@@ -80,10 +57,9 @@ namespace EmailFlashcards.Controllers
         }
 
 
+        // POST: SearchFlashcards
 
-        // POST: SearchContacts
-
-[Authorize]
+        [Authorize]
         public IActionResult SearchFlashcard(string searchString)
         {
             string userId = _userManager.GetUserId(User);
@@ -161,25 +137,22 @@ namespace EmailFlashcards.Controllers
                 {
                     await _flashcardService.AddFlashcardToCategoryAsync(categoryId, flashcard.FlashcardId);
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { SuccessMessage = "succes" });
             }
             return RedirectToAction(nameof(Index));
         }
 
         // GET: Flashcards/Edit/5
         [Authorize]
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null || _context.Flashcards == null)
-            {
-                return NotFound();
-            }
+            string UserId = _userManager.GetUserId(User);
+            var flashcard = await _context.Flashcards.Where(f => f.FlashcardId == id && f.UserId == UserId)
+                                               .FirstOrDefaultAsync();
 
-            var flashcard = await _context.Flashcards.FindAsync(id);
-            if (flashcard == null)
-            {
-                return NotFound();
-            }
+ 
+            ViewData["CategoryList"] = new MultiSelectList(await _flashcardService.GetUserCategoriesAsync(UserId), "CategoryId", "FlashcardCategoryName", await _flashcardService.GetFlashcardCategoryIdAsync(flashcard.FlashcardId));
+        
             return View(flashcard);
         }
 
@@ -187,19 +160,30 @@ namespace EmailFlashcards.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Edit(int id, [Bind("FlashcardId,FlashcardTitle,FlashcardText,FlashcardCreatedDate")] Flashcard flashcard)
+        public async Task<IActionResult> Edit(int id, [Bind("FlashcardId, FlashcardTitle, FlashcardText")] Flashcard flashcard, List<int> CategoryList)
         {
-            if (id != flashcard.FlashcardId)
-            {
-                return NotFound();
-            }
-
+            string UserId = _userManager.GetUserId(User);
             if (ModelState.IsValid)
             {
                 try
                 {
+                    flashcard.UserId = _userManager.GetUserId(User);
+                    flashcard.FlashcardCreatedDate = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
                     _context.Update(flashcard);
                     await _context.SaveChangesAsync();
+
+                    //remove the current categories
+                    List<Category> oldCategories = (await _flashcardService.GetFlashcardCategoriesAsync(flashcard.FlashcardId)).ToList();
+                    foreach (var category in oldCategories)
+                    {
+                        await _flashcardService.RemoveFlashcardFromCategoryAsync(category.CategoryId, flashcard.FlashcardId);
+                    }
+                    //add the selected categories
+                    foreach (int categoryid in CategoryList)
+                    {
+                        await _flashcardService.AddFlashcardToCategoryAsync(categoryid, flashcard.FlashcardId);
+                    }
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -212,8 +196,9 @@ namespace EmailFlashcards.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { SuccessMessage = "succes" });
             }
+            ViewData["CategoryList"] = new MultiSelectList(await _flashcardService.GetUserCategoriesAsync(UserId), "CategoryId", "FlashcardCategoryName", await _flashcardService.GetFlashcardCategoryIdAsync(flashcard.FlashcardId));
             return View(flashcard);
         }
 
@@ -253,7 +238,7 @@ namespace EmailFlashcards.Controllers
             }
             
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { SuccessMessage = "succes" });
         }
 
         private bool FlashcardExists(int id)

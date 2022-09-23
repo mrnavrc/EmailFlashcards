@@ -4,32 +4,40 @@
     ViewData["Title"] = "Edit";
 }
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.6/quill.js"
+        integrity="sha512-aZY0xUDV+pHpyF5BIQ3kYnSI+2l/9HfjZa8e9W95JPwIECEafVw2mF8zX9wZR1Bgj3wWrJfMNipLjoHLY4oubw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.6/quill.snow.css"
+      integrity="sha512-PVNMdkw+2UbxMaF03ZTxkRCySBl5QvZgSQPO0vuIpYIzb5h+Q18y8A/W/N4Vpo8EerHoi2DTZta/UxrdKPG0dA=="
+      crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
 <h1>Edit</h1>
 
 <h4>Flashcard</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="col-md-12">
+        <form asp-action="Edit" asp-controller="Flashcards">
             <input type="hidden" asp-for="FlashcardId" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="FlashcardTitle" class="control-label"></label>
                 <input asp-for="FlashcardTitle" class="form-control" />
                 <span asp-validation-for="FlashcardTitle" class="text-danger"></span>
             </div>
+            <div id="editor-container" style="height: 350px"></div>
             <div class="form-group">
-                <label asp-for="FlashcardText" class="control-label"></label>
-                <input asp-for="FlashcardText" class="form-control" />
+                <input asp-for="FlashcardText" class="form-control" type="hidden" id="quill_html" />
                 <span asp-validation-for="FlashcardText" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FlashcardCreatedDate" class="control-label"></label>
-                <input asp-for="FlashcardCreatedDate" class="form-control" />
-                <span asp-validation-for="FlashcardCreatedDate" class="text-danger"></span>
+                <label asp-for="Categories" class="control-label">Categories</label>
+                <select name="CategoryList" class="form-control" asp-items="ViewBag.CategoryList" multiple>
+                </select>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Edit" class="btn btn-primary" />
             </div>
         </form>
     </div>
@@ -38,6 +46,8 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+
+<script src="~/js/RichTextEditor.js"></script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
