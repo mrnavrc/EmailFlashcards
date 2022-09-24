@@ -44,7 +44,7 @@ namespace EmailFlashcards.Controllers
 
             if (categoryId == 0)
             {
-                flashcards = user.Flashcards.ToList();
+                flashcards = user.Flashcards.OrderByDescending(f => f.FlashcardCreatedDate).ToList();
             }
             else
             {
@@ -53,6 +53,7 @@ namespace EmailFlashcards.Controllers
                                   .ToList();
             }
             ViewData["CategoryList"] = new SelectList(categories, "CategoryId", "FlashcardCategoryName", categoryId);
+
             return View(flashcards);
         }
 

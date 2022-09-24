@@ -5,77 +5,59 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>FlashCards</h1>
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<div class="mt-4 mb-4">
+    <button type="button" asp-action="Create" class="btn btn-primary">Create New Flashcard</button>
+</div>
 
-
-<div class="row g-2">
-    <div class="col-12 col-md-4 sideNav">
-
+<div class="row">
+    <div class="col-6">
         @* Search START*@
         <form asp-action="SearchFlashcard" asp-controller="Flashcards">
-        <div class="input-group">
-        <input class="form-control" type="search" name="searchString" placeholder="Search Term" />
-        <input type="submit" class="btn btn-outline-primary" value="Search" />
-        </div>
+            <div class="input-group">
+                <input class="form-control" type="search" name="searchString" placeholder="Search Term" />
+                <input type="submit" class="btn btn-outline-primary" value="Search" />
+            </div>
         </form>
         @* Search END*@
+    </div>
+    <div class="col-6">
         @*Category filter START*@
         <form asp-action="Index" asp-controller="Flashcards">
-            <div class="mt-5">
-                <label class="form-label fw-bold">CATEGORY FILTER</label>
-                <select name="categoryId" asp-items="@ViewBag.CategoryList" class="form-control"
-                        onchange="this.form.submit()" onfocus="this.selectedIndex=-1;this.blur();">
-                    <option>All Categories</option>
-                </select>
-            </div>
+            <select name="categoryId" asp-items="@ViewBag.CategoryList" class="form-control"
+                    onchange="this.form.submit()" onfocus="this.selectedIndex=-1;this.blur();">
+                <option>All Categories</option>
+            </select>
         </form>
         @*Category filter END*@
     </div>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.FlashcardTitle)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.FlashcardText)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.FlashcardCreatedDate)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Categories)
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FlashcardTitle)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FlashcardText)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FlashcardCreatedDate)
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.FlashcardId">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.FlashcardId">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.FlashcardId">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
 </div>
+
+
+<div class="section mt-4">
+        @foreach (var item in Model)
+        {
+        <div class="card mb-3 shadow-sm">
+            <div class="card-header bg-light bg-gradient">
+                    <div class="row">
+                        <div class="col-8">
+                            @item.FlashcardTitle
+                        </div>
+                        <div class="col-4 d-flex justify-content-end">
+                        <button type="button" class="btn btn-secondary btn-sm me-1" asp-action="Edit" asp-controller="Flashcards" asp-route-id="@item.FlashcardId">Edit</button>
+                        <button type="button" class="btn btn-success btn-sm me-1" asp-action="Details" asp-route-id="@item.FlashcardId">Details</button>
+                        <button type="button" class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.FlashcardId">Delete</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <blockquote class="blockquote mb-0">
+                        @item.FlashcardText
+                    </blockquote>
+                </div>
+            </div>
+        }
+</div>
+
 
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @if (ViewData["SuccessMessage"] != null)
