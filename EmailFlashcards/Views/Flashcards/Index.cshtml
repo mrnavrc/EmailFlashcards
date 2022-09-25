@@ -5,8 +5,10 @@
     ViewData["Title"] = "Index";
 }
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+
 <div class="mt-4 mb-4">
-    <button type="button" asp-action="Create" class="btn btn-primary">Create New Flashcard</button>
+    <a asp-action="Create" class="btn btn-primary">Create New Flashcard</a>
 </div>
 
 <div class="row">
@@ -34,30 +36,30 @@
 
 
 <div class="section mt-4">
-        @foreach (var item in Model)
-        {
+    @foreach (var item in Model)
+    {
         <div class="card mb-3 shadow-sm">
             <div class="card-header bg-light bg-gradient">
-                    <div class="row">
-                        <div class="col-8">
-                            @item.FlashcardTitle
-                        </div>
-                        <div class="col-4 d-flex justify-content-end">
-                        <button type="button" class="btn btn-secondary btn-sm me-1" asp-action="Edit" asp-controller="Flashcards" asp-route-id="@item.FlashcardId">Edit</button>
-                        <button type="button" class="btn btn-success btn-sm me-1" asp-action="Details" asp-route-id="@item.FlashcardId">Details</button>
-                        <button type="button" class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.FlashcardId">Delete</button>
-                        </div>
+                <div class="row">
+                    <div class="col-11" data-bs-toggle="collapse" data-bs-target="#id_@item.FlashcardId" aria-expanded="false" aria-controls="id_@item.FlashcardId">
+                        @item.FlashcardTitle
+                    </div>
+                    <div class="col-1 d-flex justify-content-end">
+                        <a asp-action="Edit" asp-route-id="@item.FlashcardId"><i class="bi bi-pencil-fill btn btn-secondary me-1"></i></a>
+                        <a asp-action="Delete" asp-route-id="@item.FlashcardId"><i class="bi bi-trash-fill btn btn-danger me-1"></i></a>
                     </div>
                 </div>
+            </div>
+            <div class="collapse" id="id_@item.FlashcardId">
                 <div class="card-body">
                     <blockquote class="blockquote mb-0">
-                        @item.FlashcardText
+                        @Html.Raw(item.FlashcardText)
                     </blockquote>
                 </div>
             </div>
-        }
+        </div>
+    }
 </div>
-
 
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @if (ViewData["SuccessMessage"] != null)
@@ -66,6 +68,18 @@
         Swal.fire({
             icon: 'success',
             title: 'Your action has been saved',
+            showConfirmButton: false,
+            timer: 1500
+        })
+    </script>
+}
+
+@if (ViewData["DeleteAction"] != null)
+{
+    <script>
+        Swal.fire({
+            icon: 'warning',
+            title: 'Your flashcard has been deleted',
             showConfirmButton: false,
             timer: 1500
         })

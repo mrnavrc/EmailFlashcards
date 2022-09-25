@@ -11,7 +11,9 @@ namespace EmailFlashcards.Models
 
         public string? UserId { get; set; }
 
+
         [Required]
+        [Display(Name = "Name of your flashcard")]
         public string? FlashcardTitle { get; set; }
 
         [Required]

@@ -12,16 +12,13 @@
       crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 
-<h1>Edit</h1>
+<h1>Edit Your Flashcard</h1>
 
-<h4>Flashcard</h4>
-<hr />
-<div class="row">
+<div class="row mt-4">
     <div class="col-md-12">
         <form asp-action="Edit" asp-controller="Flashcards">
-            <input type="hidden" asp-for="FlashcardId" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
+            <div class="form-group mb-2 shadow-sm">
                 <label asp-for="FlashcardTitle" class="control-label"></label>
                 <input asp-for="FlashcardTitle" class="form-control" />
                 <span asp-validation-for="FlashcardTitle" class="text-danger"></span>
@@ -31,21 +28,19 @@
                 <input asp-for="FlashcardText" class="form-control" type="hidden" id="quill_html" />
                 <span asp-validation-for="FlashcardText" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group mt-2 shadow-sm">
                 <label asp-for="Categories" class="control-label">Categories</label>
                 <select name="CategoryList" class="form-control" asp-items="ViewBag.CategoryList" multiple>
                 </select>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Edit" class="btn btn-primary" />
+            <div class="form-group mt-2">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 <script src="~/js/RichTextEditor.js"></script>
 

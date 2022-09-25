@@ -31,8 +31,9 @@ namespace EmailFlashcards.Controllers
 
         // GET: Flashcards + GET: filter categories
         [Authorize]
-        public IActionResult Index(int categoryId, string SuccessMessage = null)
+        public IActionResult Index(int categoryId, string SuccessMessage = null, string DeleteAction = null)
         {
+            ViewData["DeleteAction"] = DeleteAction;
             ViewData["SuccessMessage"] = SuccessMessage;
             string UserId = _userManager.GetUserId(User);
             User user = _context.Users
@@ -239,7 +240,7 @@ namespace EmailFlashcards.Controllers
             }
             
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index), new { SuccessMessage = "succes" });
+            return RedirectToAction(nameof(Index), new { DeleteAction = "Delete" });
         }
 
         private bool FlashcardExists(int id)

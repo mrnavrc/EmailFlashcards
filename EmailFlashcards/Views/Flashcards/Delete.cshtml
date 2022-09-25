@@ -1,39 +1,25 @@
 ﻿@model EmailFlashcards.Models.Flashcard
 
-@{
-    ViewData["Title"] = "Delete";
-}
-
-<h1>Delete</h1>
-
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Flashcard</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FlashcardTitle)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FlashcardTitle)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FlashcardText)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FlashcardText)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FlashcardCreatedDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FlashcardCreatedDate)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="FlashcardId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+<div class="row justify-content-center mt-5">
+    <div class="col-auto">
+        <div class="card text-white bg-danger mb-3" style="max-width: 27rem;">
+            <div class="card-header">
+                <h4>Are you sure you want to delete this flashcard?</h4>
+            </div>
+            <div class="card-body">
+                <h6 class="card-title">
+                    Name of your flashcard: @Model.FlashcardTitle
+                </h6>
+                <p class="card-text">
+                    Created: @Model.FlashcardCreatedDate
+                </p>
+                <form asp-action="Delete">
+                    <div class="form-group mt-2">
+                        <input type="submit" value="Delete" class="btn btn-dark text-white" />
+                        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
