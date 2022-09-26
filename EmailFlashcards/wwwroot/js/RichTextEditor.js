@@ -23,9 +23,10 @@ const quill = new Quill('#editor-container', {
     modules: {
         toolbar: toolbarOptions
     },
-    placeholder: 'Place for your flashcard...',
+    placeholder: 'Here is a place for your card :)',
     theme: 'snow'
 });
 quill.on('text-change', innerHTML => {
     document.getElementById("quill_html").value = quill.root.innerHTML;
 });
+
