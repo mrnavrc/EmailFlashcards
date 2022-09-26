@@ -1,14 +1,8 @@
 ﻿@model EmailFlashcards.Models.Category
 
-@{
-    ViewData["Title"] = "Create";
-}
+<h1>Create Your Category</h1>
 
-<h1>Create</h1>
-
-<h4>Category</h4>
-<hr />
-<div class="row">
+<div class="row mt-4">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -17,28 +11,19 @@
                 <input asp-for="FlashcardCategoryName" class="form-control" />
                 <span asp-validation-for="FlashcardCategoryName" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group mt-2">
                 <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @if (ViewData["DuplicityMessage"] != null)
 {
-    <script>
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Hey, slow down, you diligent student. This is a duplicate category. Try another name, please.',
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Yeah, geez, I'll think of another name",
-        })
-    </script>
+    <script src="~/js/AlertDuplicity.js"></script>
+   
 }
 
 

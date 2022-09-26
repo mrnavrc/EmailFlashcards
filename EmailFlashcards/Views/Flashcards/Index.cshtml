@@ -1,9 +1,6 @@
 ﻿@model IEnumerable<EmailFlashcards.Models.Flashcard>
 
 
-@{
-    ViewData["Title"] = "Index";
-}
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
 
@@ -64,24 +61,10 @@
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @if (ViewData["SuccessMessage"] != null)
 {
-    <script>
-        Swal.fire({
-            icon: 'success',
-            title: 'Your action has been saved',
-            showConfirmButton: false,
-            timer: 1500
-        })
-    </script>
+    <script src="~/js/AlertSuccess.js"></script>
 }
 
 @if (ViewData["DeleteAction"] != null)
 {
-    <script>
-        Swal.fire({
-            icon: 'warning',
-            title: 'Your flashcard has been deleted',
-            showConfirmButton: false,
-            timer: 1500
-        })
-    </script>
+    <script src="~/js/AlertDelete.js"></script>
 }

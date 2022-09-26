@@ -1,39 +1,35 @@
 ﻿@model EmailFlashcards.Models.Category
 
-@{
-    ViewData["Title"] = "Edit";
-}
 
-<h1>Edit</h1>
+<h1>Edit Your Category</h1>
 
-<h4>Category</h4>
-<hr />
-<div class="row">
+<div class="row mt-4">
     <div class="col-md-4">
         <form asp-action="Edit">
-           <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="CategoryId" />
-            @*   <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId"></select>
-                <span asp-validation-for="UserId" class="text-danger"></span>
-            </div>*@
             <div class="form-group">
                 <label asp-for="FlashcardCategoryName" class="control-label"></label>
                 <input asp-for="FlashcardCategoryName" class="form-control" />
                 <span asp-validation-for="FlashcardCategoryName" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group mt-2">
                 <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@if (ViewData["DuplicityMessage"] != null)
+{
+    <script src="~/js/AlertDuplicity.js"></script>
+
+}
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

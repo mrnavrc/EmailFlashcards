@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using System.Linq.Expressions;
 using System.Data;
+using System.Xml.Linq;
 
 namespace EmailFlashcards.Controllers
 {
@@ -28,8 +29,9 @@ namespace EmailFlashcards.Controllers
 
         // GET: Categories
         [Authorize]
-        public IActionResult Index(string SuccessMessage = null)
+        public IActionResult Index(string SuccessMessage = null, string DeleteAction = null)
         {
+            ViewData["DeleteAction"] = DeleteAction;
             ViewData["SuccessMessage"] = SuccessMessage;
             string userId = _userManager.GetUserId(User);
             var categories = _context.Categories.Where(categories => categories.UserId == userId)
@@ -95,7 +97,7 @@ namespace EmailFlashcards.Controllers
             {
                 return NotFound();
             }
-            
+
 
             return View(category);
         }
@@ -173,7 +175,7 @@ namespace EmailFlashcards.Controllers
                 _context.Categories.Remove(category);
                 await _context.SaveChangesAsync();
             }
-            return RedirectToAction(nameof(Index), new { SuccessMessage = "succes" });
+            return RedirectToAction(nameof(Index), new { DeleteAction = "Delete" });
         }
 
         private bool CategoryExists(int id)

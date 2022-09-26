@@ -1,54 +1,37 @@
 ﻿@model IEnumerable<EmailFlashcards.Models.Category>
 
-@{
-    ViewData["Title"] = "Index";
-}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+<div class="mt-4 mb-4">
+    <a asp-action="Create" class="btn btn-primary">Create New Category</a>
+</div>
 
 
-<h1>Categories</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.FlashcardCategoryName)
-            </th>
-           @* <th>
-                @Html.DisplayNameFor(model => model.User)
-            </th>*@
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FlashcardCategoryName)
-            </td>
-          @*  <td>
-                @Html.DisplayFor(modelItem => item.User.Id)
-            </td>*@
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.CategoryId">Edit</a> |
-                <a asp-action="Delete" asp-route-id="@item.CategoryId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="section mt-4">
+    @foreach (var item in Model)
+    {
+        <div class="card mb-3 shadow-sm">
+            <div class="card-header bg-light bg-gradient">
+                <div class="row">
+                    <div class="col-11" data-bs-toggle="collapse" data-bs-target="#id_@item.CategoryId" aria-expanded="false" aria-controls="id_@item.CategoryId">
+                        @item.FlashcardCategoryName
+                    </div>
+                    <div class="col-1 d-flex justify-content-end">
+                        <a asp-action="Edit" asp-route-id="@item.CategoryId"><i class="bi bi-pencil-fill btn btn-secondary me-1"></i></a>
+                        <a asp-action="Delete" asp-route-id="@item.CategoryId"><i class="bi bi-trash-fill btn btn-danger me-1"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
 
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @if (ViewData["SuccessMessage"] != null)
 {
-    <script>
-        Swal.fire({
-            icon: 'success',
-            title: 'Your action has been saved',
-            showConfirmButton: false,
-            timer: 1500
-        })
-    </script>
+    <script src="~/js/AlertSuccess.js"></script>
+}
+
+@if (ViewData["DeleteAction"] != null)
+{
+    <script src="~/js/AlertDelete.js"></script>
 }

@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using EmailFlashcards.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 
+
 namespace EmailFlashcards.Controllers
 {
     public class FlashcardsController : Controller
@@ -59,7 +60,7 @@ namespace EmailFlashcards.Controllers
         }
 
 
-        // POST: SearchFlashcards
+        // POST: SearchFlashcards$
 
         [Authorize]
         public IActionResult SearchFlashcard(string searchString)
@@ -82,8 +83,6 @@ namespace EmailFlashcards.Controllers
 
             return View(nameof(Index), flashcards);
         }
-
-
 
 
 
