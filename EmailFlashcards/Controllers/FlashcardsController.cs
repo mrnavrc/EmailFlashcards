@@ -11,6 +11,7 @@ using EmailFlashcards.Models;
 using Microsoft.AspNetCore.Identity;
 using EmailFlashcards.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using X.PagedList;
 
 
 namespace EmailFlashcards.Controllers
@@ -32,31 +33,39 @@ namespace EmailFlashcards.Controllers
 
         // GET: Flashcards + GET: filter categories
         [Authorize]
-        public IActionResult Index(int categoryId, string SuccessMessage = null, string DeleteAction = null)
+        public IActionResult Index(int categoryId, int? page, string SuccessMessage = null, string DeleteAction = null)
         {
             ViewData["DeleteAction"] = DeleteAction;
             ViewData["SuccessMessage"] = SuccessMessage;
+
+            int pageSize = 10;
+            int pageNumber = (page ?? 1);
             string UserId = _userManager.GetUserId(User);
+
             User user = _context.Users
                                 .Include(c => c.Flashcards)
                                 .ThenInclude(c => c.Categories)
                                 .FirstOrDefault(u => u.Id == UserId);
             var categories = user.Categories;
-            var flashcards = new List<Flashcard>();
+            ViewData["CategoryList"] = new SelectList(categories, "CategoryId", "FlashcardCategoryName", categoryId);
 
             if (categoryId == 0)
             {
-                flashcards = user.Flashcards.OrderByDescending(f => f.FlashcardCreatedDate).ToList();
+                var flashcards = _context.Flashcards.Where(f => f.UserId == UserId)
+                                                .OrderByDescending(f => f.FlashcardCreatedDate)
+                                                .ToPagedList(pageNumber, pageSize);
+                return View(flashcards);
             }
             else
             {
-                flashcards = user.Categories.FirstOrDefault(c => c.CategoryId == categoryId)
-                                  .Flashcards
-                                  .ToList();
+                var flashcards = _context.Categories.FirstOrDefault(c => c.CategoryId == categoryId)
+                                  .Flashcards.OrderByDescending(f => f.FlashcardCreatedDate)
+                                  .ToPagedList(pageNumber, pageSize);
+                return View(flashcards);
             }
-            ViewData["CategoryList"] = new SelectList(categories, "CategoryId", "FlashcardCategoryName", categoryId);
 
-            return View(flashcards);
+           
+           
         }
 
 
