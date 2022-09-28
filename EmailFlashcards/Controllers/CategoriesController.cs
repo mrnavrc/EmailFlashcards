@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Linq.Expressions;
 using System.Data;
 using System.Xml.Linq;
+using X.PagedList;
 
 namespace EmailFlashcards.Controllers
 {
@@ -29,13 +30,18 @@ namespace EmailFlashcards.Controllers
 
         // GET: Categories
         [Authorize]
-        public IActionResult Index(string SuccessMessage = null, string DeleteAction = null)
+        public IActionResult Index(int? page, string SuccessMessage = null, string DeleteAction = null)
         {
             ViewData["DeleteAction"] = DeleteAction;
             ViewData["SuccessMessage"] = SuccessMessage;
+
+            int pageSize = 10;
+            int pageNumber = (page ?? 1);
             string userId = _userManager.GetUserId(User);
             var categories = _context.Categories.Where(categories => categories.UserId == userId)
-                                                .ToList();
+                                                .OrderByDescending(categories => categories.FlashcardCategoryName)
+                                                .ToPagedList(pageNumber, pageSize);
+                                                
             return View(categories);
         }
 

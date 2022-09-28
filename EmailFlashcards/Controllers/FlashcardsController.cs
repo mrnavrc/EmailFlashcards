@@ -31,7 +31,7 @@ namespace EmailFlashcards.Controllers
             _flashcardService = flashcardService;
         }
 
-        // GET: Flashcards + GET: filter categories
+        // GET: Flashcards 
         [Authorize]
         public IActionResult Index(int categoryId, int? page, string SuccessMessage = null, string DeleteAction = null)
         {
