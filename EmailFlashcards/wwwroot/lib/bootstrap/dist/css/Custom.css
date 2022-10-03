@@ -22,3 +22,26 @@
         background-color: #480493;
         border-color: #480493;
     }
+
+.btn-outline-primary {
+    color: #7634bf;
+    border-color: #7634bf;
+}
+
+    .btn-outline-primary:hover {
+        color: #fff;
+        background-color: #7634bf;
+        border-color: #7634bf;
+    }
+
+.btn-secondary {
+    color: #fff;
+    background-color: #aaaaaa;
+    border-color: #aaaaaa;
+}
+
+
+.form-check-input:checked {
+    background-color: #7634bf;
+    border-color: #7634bf;
+}

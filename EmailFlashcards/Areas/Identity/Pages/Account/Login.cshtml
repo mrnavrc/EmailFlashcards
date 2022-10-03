@@ -7,10 +7,10 @@
     <div class="d-flex justify-content-center">
         <section>
             <form id="account" method="post">
-                <h2>Log in to your account.</h2>
-                <hr />
+                <h2>Log in to your account</h2>
+
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-floating mb-2">
+                <div class="form-floating mb-2 mt-4">
                     <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" />
                     <label asp-for="Input.Email" class="form-label"></label>
                     <span asp-validation-for="Input.Email" class="text-danger"></span>
