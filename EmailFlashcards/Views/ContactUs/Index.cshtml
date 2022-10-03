@@ -1,0 +1,45 @@
+﻿@model EmailFlashcards.Models.ContactUs
+
+<!DOCTYPE html>
+<html>
+
+<div class="row">
+    <div class="d-flex justify-content-center">
+        <section>
+            <h2>Submit Email Request for Assistance</h2>
+            <form asp-action="SendEmail">
+                <div>
+                    Your name:
+                    <input type="text" asp-for="CustomerName" />
+                </div>
+
+                <div>
+                    Your email address:
+                    <input type="text" asp-for="CustomerEmail" />
+                </div>
+
+                <div>
+                    Subject:
+                    <input type="text" asp-for="CustomerEmailSubject" />
+                </div>
+
+                <div>
+                    Details about your problem: <br />
+                    <textarea asp-for="CustomerEmailText" cols="100" rows="15"></textarea>
+                </div>
+
+                <div class="form-group mt-2">
+                    <input type="submit" value="Send" class="btn btn-primary" />
+                </div>
+               
+            </form>
+        </section>
+    </div>
+</div>
+
+
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@if (ViewData["SuccessEmail"] != null)
+{
+    <script src="~/js/AlertEmailSend.js"></script>
+}

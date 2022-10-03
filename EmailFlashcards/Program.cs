@@ -26,6 +26,7 @@ builder.Services.AddControllersWithViews();
 // Custom Services
 
 builder.Services.AddScoped<IFlashcardService, FlashcardService>();
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("MailSettings"));
 
 var app = builder.Build();
 
