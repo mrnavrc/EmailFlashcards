@@ -4,6 +4,11 @@ using EmailFlashcards.Services;
 using EmailFlashcards.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Hosting;
+using System.Configuration;
+using Quartz;
+using EmailFlashcards.Jobs;
+using JetBrains.Annotations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +32,25 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IFlashcardService, FlashcardService>();
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("MailSettings"));
+
+
+builder.Services.AddQuartz(q =>
+{
+
+    q.UseMicrosoftDependencyInjectionScopedJobFactory();
+    var jobKey = new JobKey("SendEmailJob");
+    q.AddJob<SendEmailJob>(opts => opts.WithIdentity(jobKey));
+
+  
+    q.AddTrigger(opts => opts
+        .ForJob(jobKey)
+        .WithIdentity("SendEmailJob-trigger")
+        .WithCronSchedule("0/5 * * * * ?"));
+
+
+});
+
+builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
 var app = builder.Build();
 
@@ -58,3 +82,4 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.Run();
+

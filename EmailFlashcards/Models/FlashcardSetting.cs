@@ -18,5 +18,9 @@ namespace EmailFlashcards.Models
         public TimeOnly Time { get; set; }
 
         public string? UserId { get; set; }
+
+        public virtual User? User { get; set; }
+
+        public virtual Flashcard? Flashcard { get; set; }
     }
 }
