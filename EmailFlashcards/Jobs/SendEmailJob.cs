@@ -6,6 +6,7 @@ using Quartz;
 using System.Runtime.CompilerServices;
 using EmailFlashcards.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace EmailFlashcards.Jobs
 {
@@ -23,31 +24,30 @@ namespace EmailFlashcards.Jobs
             _context = context;
             _userManager = userManager;
         }
-        public Task Execute(IJobExecutionContext context)
+        public Task Execute(IJobExecutionContext jobcontext)
         {
 
 
-            string UsersEmails = _context.FlashcardsSettings.Where(f => f.Time == TimeOnly.Parse("06:00:00")).ToString();
 
 
-            var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("FlashcardEmailApp", "navratilm@outlook.com"));
-            message.To.Add(new MailboxAddress("To Admin", "navratilm@outlook.com"));
-            message.Subject = "test job";
+            //var message = new MimeMessage();
+            //message.From.Add(new MailboxAddress("FlashcardEmailApp", "navratilm@outlook.com"));
+            //message.To.Add(new MailboxAddress("To Admin", "navratilm@outlook.com"));
+            //message.Subject = "test job";
 
-            message.Body = new TextPart("html")
-            {
-                Text = "test job"
-            };
+            //message.Body = new TextPart("html")
+            //{
+            //    Text = "test job"
+            //};
 
-            //SMTP
-            using (var client = new SmtpClient())
-            {
-                client.Connect(_emailSettings.ContactClient, _emailSettings.ContactPort, false);
-                client.Authenticate(_emailSettings.ContactEmail, _emailSettings.ContactPassword);
-                client.Send(message);
-                client.Disconnect(true);
-            }
+            ////SMTP
+            //using (var client = new SmtpClient())
+            //{
+            //    client.Connect(_emailSettings.ContactClient, _emailSettings.ContactPort, false);
+            //    client.Authenticate(_emailSettings.ContactEmail, _emailSettings.ContactPassword);
+            //    client.Send(message);
+            //    client.Disconnect(true);
+            //}
 
             return Task.FromResult(true);
         }

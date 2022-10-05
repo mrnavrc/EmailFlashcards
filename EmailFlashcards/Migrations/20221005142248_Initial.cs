@@ -52,6 +52,22 @@ namespace EmailFlashcards.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "FlashcardsSettings",
+                columns: table => new
+                {
+                    FlashcardSettingsId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    FlashcardEmailAdress = table.Column<string>(type: "text", nullable: true),
+                    FlashcardsPerDay = table.Column<int>(type: "integer", nullable: false),
+                    Time = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FlashcardsSettings", x => x.FlashcardSettingsId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -163,9 +179,9 @@ namespace EmailFlashcards.Migrations
                 {
                     CategoryId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    CategoryName = table.Column<string>(type: "text", nullable: true),
-                    FlashcardsCategoryName = table.Column<string>(type: "text", nullable: false),
-                    UserId = table.Column<string>(type: "text", nullable: true)
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    FlashcardCategoryName = table.Column<string>(type: "text", nullable: false),
+                    FlashcardSettingsId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -174,7 +190,13 @@ namespace EmailFlashcards.Migrations
                         name: "FK_Categories_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Categories_FlashcardsSettings_FlashcardSettingsId",
+                        column: x => x.FlashcardSettingsId,
+                        principalTable: "FlashcardsSettings",
+                        principalColumn: "FlashcardSettingsId");
                 });
 
             migrationBuilder.CreateTable(
@@ -183,10 +205,11 @@ namespace EmailFlashcards.Migrations
                 {
                     FlashcardId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<string>(type: "text", nullable: true),
                     FlashcardTitle = table.Column<string>(type: "text", nullable: false),
                     FlashcardText = table.Column<string>(type: "text", nullable: false),
                     FlashcardCreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    UserId = table.Column<string>(type: "text", nullable: true)
+                    FlashcardSettingsId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -196,6 +219,35 @@ namespace EmailFlashcards.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Flashcards_FlashcardsSettings_FlashcardSettingsId",
+                        column: x => x.FlashcardSettingsId,
+                        principalTable: "FlashcardsSettings",
+                        principalColumn: "FlashcardSettingsId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FlashcardSettingUser",
+                columns: table => new
+                {
+                    FlashcardSettingsId = table.Column<int>(type: "integer", nullable: false),
+                    UsersId = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FlashcardSettingUser", x => new { x.FlashcardSettingsId, x.UsersId });
+                    table.ForeignKey(
+                        name: "FK_FlashcardSettingUser_AspNetUsers_UsersId",
+                        column: x => x.UsersId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FlashcardSettingUser_FlashcardsSettings_FlashcardSettingsId",
+                        column: x => x.FlashcardSettingsId,
+                        principalTable: "FlashcardsSettings",
+                        principalColumn: "FlashcardSettingsId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -260,6 +312,11 @@ namespace EmailFlashcards.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Categories_FlashcardSettingsId",
+                table: "Categories",
+                column: "FlashcardSettingsId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Categories_UserId",
                 table: "Categories",
                 column: "UserId");
@@ -270,9 +327,19 @@ namespace EmailFlashcards.Migrations
                 column: "FlashcardsFlashcardId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Flashcards_FlashcardSettingsId",
+                table: "Flashcards",
+                column: "FlashcardSettingsId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Flashcards_UserId",
                 table: "Flashcards",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FlashcardSettingUser_UsersId",
+                table: "FlashcardSettingUser",
+                column: "UsersId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -296,6 +363,9 @@ namespace EmailFlashcards.Migrations
                 name: "CategoryFlashcard");
 
             migrationBuilder.DropTable(
+                name: "FlashcardSettingUser");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
@@ -306,6 +376,9 @@ namespace EmailFlashcards.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "FlashcardsSettings");
         }
     }
 }

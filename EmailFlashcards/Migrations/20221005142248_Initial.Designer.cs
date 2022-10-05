@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EmailFlashcards.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220905105825_Flashcard_userId_model_added")]
-    partial class Flashcard_userId_model_added
+    [Migration("20221005142248_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -51,11 +51,16 @@ namespace EmailFlashcards.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("FlashcardSettingsId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("CategoryId");
+
+                    b.HasIndex("FlashcardSettingsId");
 
                     b.HasIndex("UserId");
 
@@ -73,6 +78,9 @@ namespace EmailFlashcards.Migrations
                     b.Property<DateTime?>("FlashcardCreatedDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int?>("FlashcardSettingsId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("FlashcardText")
                         .IsRequired()
                         .HasColumnType("text");
@@ -86,9 +94,36 @@ namespace EmailFlashcards.Migrations
 
                     b.HasKey("FlashcardId");
 
+                    b.HasIndex("FlashcardSettingsId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("Flashcards");
+                });
+
+            modelBuilder.Entity("EmailFlashcards.Models.FlashcardSetting", b =>
+                {
+                    b.Property<int>("FlashcardSettingsId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("FlashcardSettingsId"));
+
+                    b.Property<string>("FlashcardEmailAdress")
+                        .HasColumnType("text");
+
+                    b.Property<int>("FlashcardsPerDay")
+                        .HasColumnType("integer");
+
+                    b.Property<TimeOnly>("Time")
+                        .HasColumnType("time without time zone");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.HasKey("FlashcardSettingsId");
+
+                    b.ToTable("FlashcardsSettings");
                 });
 
             modelBuilder.Entity("EmailFlashcards.Models.User", b =>
@@ -163,6 +198,21 @@ namespace EmailFlashcards.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("FlashcardSettingUser", b =>
+                {
+                    b.Property<int>("FlashcardSettingsId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("UsersId")
+                        .HasColumnType("text");
+
+                    b.HasKey("FlashcardSettingsId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("FlashcardSettingUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -318,22 +368,41 @@ namespace EmailFlashcards.Migrations
 
             modelBuilder.Entity("EmailFlashcards.Models.Category", b =>
                 {
-                    b.HasOne("EmailFlashcards.Models.User", "User")
-                        .WithMany()
+                    b.HasOne("EmailFlashcards.Models.FlashcardSetting", null)
+                        .WithMany("Categories")
+                        .HasForeignKey("FlashcardSettingsId");
+
+                    b.HasOne("EmailFlashcards.Models.User", null)
+                        .WithMany("Categories")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("EmailFlashcards.Models.Flashcard", b =>
                 {
-                    b.HasOne("EmailFlashcards.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                    b.HasOne("EmailFlashcards.Models.FlashcardSetting", null)
+                        .WithMany("Flashcards")
+                        .HasForeignKey("FlashcardSettingsId");
 
-                    b.Navigation("User");
+                    b.HasOne("EmailFlashcards.Models.User", null)
+                        .WithMany("Flashcards")
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("FlashcardSettingUser", b =>
+                {
+                    b.HasOne("EmailFlashcards.Models.FlashcardSetting", null)
+                        .WithMany()
+                        .HasForeignKey("FlashcardSettingsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EmailFlashcards.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -385,6 +454,20 @@ namespace EmailFlashcards.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("EmailFlashcards.Models.FlashcardSetting", b =>
+                {
+                    b.Navigation("Categories");
+
+                    b.Navigation("Flashcards");
+                });
+
+            modelBuilder.Entity("EmailFlashcards.Models.User", b =>
+                {
+                    b.Navigation("Categories");
+
+                    b.Navigation("Flashcards");
                 });
 #pragma warning restore 612, 618
         }

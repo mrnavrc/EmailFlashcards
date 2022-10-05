@@ -111,6 +111,9 @@ namespace EmailFlashcards.Migrations
 
                     b.HasKey("FlashcardSettingsId");
 
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
                     b.ToTable("FlashcardsSettings");
                 });
 
@@ -341,20 +344,25 @@ namespace EmailFlashcards.Migrations
 
             modelBuilder.Entity("EmailFlashcards.Models.Category", b =>
                 {
-                    b.HasOne("EmailFlashcards.Models.User", "User")
+                    b.HasOne("EmailFlashcards.Models.User", null)
                         .WithMany("Categories")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("EmailFlashcards.Models.Flashcard", b =>
                 {
-                    b.HasOne("EmailFlashcards.Models.User", "User")
+                    b.HasOne("EmailFlashcards.Models.User", null)
                         .WithMany("Flashcards")
                         .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("EmailFlashcards.Models.FlashcardSetting", b =>
+                {
+                    b.HasOne("EmailFlashcards.Models.User", "User")
+                        .WithOne("FlashcardSetting")
+                        .HasForeignKey("EmailFlashcards.Models.FlashcardSetting", "UserId");
 
                     b.Navigation("User");
                 });
@@ -413,6 +421,8 @@ namespace EmailFlashcards.Migrations
             modelBuilder.Entity("EmailFlashcards.Models.User", b =>
                 {
                     b.Navigation("Categories");
+
+                    b.Navigation("FlashcardSetting");
 
                     b.Navigation("Flashcards");
                 });
