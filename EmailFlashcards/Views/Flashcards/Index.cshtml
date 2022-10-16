@@ -58,9 +58,24 @@
     }
 </div>
 
-<div class="container">
-    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
-    @Html.PagedListPager( Model, page => Url.Action("Index", new { page }))
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-3">
+            <div class="d-flex justify-content-start">
+                @Html.PagedListPager( Model, page => Url.Action("Index", new { page }))
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="d-flex justify-content-center mt-2">
+                Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="d-flex justify-content-end">
+                <a asp-controller="Flashcards" asp-action="ExportCsv" class="btn btn-secondary" target="_blank">Export all to CSV</a>
+            </div>
+        </div>
+    </div>
 </div>
 
 

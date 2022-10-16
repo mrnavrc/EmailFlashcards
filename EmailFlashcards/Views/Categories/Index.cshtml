@@ -29,10 +29,21 @@
     }
 </div>
 
-<div class="container">
-    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
-    @Html.PagedListPager( Model, page => Url.Action("Index", new { page }))
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-6">
+            <div class="d-flex justify-content-start">
+                @Html.PagedListPager( Model, page => Url.Action("Index", new { page }))
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="d-flex justify-content-end mt-2">
+                Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+            </div>
+        </div>
+    </div>
 </div>
+
 
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @if (ViewData["SuccessMessage"] != null)

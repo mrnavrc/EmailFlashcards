@@ -1,9 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EmailFlashcards.Data;
@@ -12,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using EmailFlashcards.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using X.PagedList;
-
+using Org.BouncyCastle.Bcpg;
 
 namespace EmailFlashcards.Controllers
 {
@@ -251,9 +246,26 @@ namespace EmailFlashcards.Controllers
             return RedirectToAction(nameof(Index), new { DeleteAction = "Delete" });
         }
 
+        public FileResult ExportCsv()
+        {
+            string userId = _userManager.GetUserId(User);
+            
+            var flashcardList = _context.Flashcards.Where(f => f.UserId == userId)
+                                                   .ToList();
+                                            
+            return File(flashcardList, "flashcards.csv");
+        }
+        public virtual FlashcardCsvResult File(IEnumerable<Flashcard> flashcardList, string fileDownloadName)
+        {
+            return new FlashcardCsvResult(flashcardList, fileDownloadName);
+        }
+
         private bool FlashcardExists(int id)
         {
           return (_context.Flashcards?.Any(e => e.FlashcardId == id)).GetValueOrDefault();
         }
+
+
+       
     }
 }
