@@ -2,13 +2,9 @@ using EmailFlashcards.Data;
 using EmailFlashcards.Models;
 using EmailFlashcards.Services;
 using EmailFlashcards.Services.Interfaces;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Hosting;
-using System.Configuration;
 using Quartz;
 using EmailFlashcards.Jobs;
-using JetBrains.Annotations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,6 +47,19 @@ builder.Services.AddQuartz(q =>
 });
 
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+
+
+builder.Services.AddAuthentication()
+        .AddMicrosoftAccount(microsoftOptions =>
+        {
+            microsoftOptions.ClientId = builder.Configuration["Authentication:Microsoft:ClientId"];
+            microsoftOptions.ClientSecret = builder.Configuration["Authentication:Microsoft:ClientSecret"];
+        })
+        .AddGoogle(googleOptions =>
+        {
+            googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+            googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+            });
 
 var app = builder.Build();
 
